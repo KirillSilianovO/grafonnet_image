@@ -1,0 +1,7 @@
+---
+
+version: '3'
+
+vars:
+  IMAGE_NAMESPACE: "kirillsilianov/template_image"
+  VERSION: "1.0.4"
