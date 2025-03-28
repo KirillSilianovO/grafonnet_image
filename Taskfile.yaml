@@ -14,7 +14,14 @@ vars:
 tasks:
   build_load:
     label: 'Build image and load to Docker'
-    cmd: "IMAGE_NAMESPACE={{ .IMAGE_NAMESPACE }} VERSION={{ .VERSION }} LOCAL_PLATFORM={{ .LOCAL_PLATFORM }} docker buildx bake load"
+    cmd: "docker buildx bake load"
+    env:
+      IMAGE_NAMESPACE: "{{ .IMAGE_NAMESPACE }}"
+      VERSION: "{{ .VERSION }}"
+      LOCAL_PLATFORM: "{{ .LOCAL_PLATFORM }}"
+      GO_JSONNET_VERSION: "{{ .GO_JSONNET_VERSION }}"
+      GO_JSONNET_LINTER_VERSION: "{{ .GO_JSONNET_LINTER_VERSION }}"
+      JSONNET_BUNDLER_VERSION: "{{ .JSONNET_BUNDLER_VERSION }}"
 
   build_push:
     label: 'Build image and push to DockerHub'
@@ -24,7 +31,11 @@ tasks:
 
   run:
     label: 'Run container'
-    cmd: "docker run {{ .IMAGE_NAMESPACE }}:{{ .VERSION }}"
+    cmd: "docker run -it --rm {{ .IMAGE_NAMESPACE }}:{{ .VERSION }}"
+
+  run_install_grafonnet:
+    label: 'Run container and install grafonnet'
+    cmd: "docker run -it --rm {{ .IMAGE_NAMESPACE }}:{{ .VERSION }} jb install github.com/grafana/grafonnet/gen/grafonnet-latest@main"
 
   run_background:
     label: 'Run container in background'
